@@ -27,6 +27,12 @@ default: $(addprefix $(OUTFILE_PREFIX).,$(DEFAULT_EXTENSIONS))
 all: $(addprefix $(OUTFILE_PREFIX).,$(DEFAULT_EXTENSIONS)) \
      $(addprefix $(OUTFILE_PREFIX).,$(ADDITIONAL_EXTENSIONS))
 
+tex:	$(addprefix $(OUTFILE_PREFIX).,latex)
+pdf:	$(addprefix $(OUTFILE_PREFIX).,pdf)
+doc:	$(addprefix $(OUTFILE_PREFIX).,docx)
+html:	$(addprefix $(OUTFILE_PREFIX).,html)
+epub:	$(addprefix $(OUTFILE_PREFIX).,epub)
+
 $(JSON_FILE): $(ARTICLE_FILE) $(LUA_FILTERS)
 	$(PANDOC) $(PANDOC_READER_OPTIONS) \
 		     $(foreach filter, $(LUA_FILTERS), --lua-filter=$(filter)) \
@@ -118,13 +124,16 @@ $(OUTFILE_PREFIX).jats $(OUTFILE_PREFIX).xml: $(ARTICLE_FILE) \
 	       --output $@ $<
 
 clean:
-	@# Explicitly iterate over known extensions instead of using a wildcard.
-	@# This lets us avoid to accidentally delete any other files, e.g. if the
-	@# ARTICLE_FILE happens to begin with OUTFILE_PREFIX.
+ifeq ($(OS),Windows_NT)
+	del $(OUTFILE_PREFIX).docx $(OUTFILE_PREFIX).epub $(OUTFILE_PREFIX).html
+	del $(OUTFILE_PREFIX).odt $(OUTFILE_PREFIX).latex $(OUTFILE_PREFIX).pdf
+	del $(JSON_FILE) $(FLATTENED_JSON_FILE)
+else
 	for ext in $(DEFAULT_EXTENSIONS) $(ADDITIONAL_EXTENSIONS); do\
 		rm -f $(OUTFILE_PREFIX).$$ext;\
 	done
 	rm -f $(JSON_FILE) $(FLATTENED_JSON_FILE)
+endif
 
 .PHONY: all clean
 
