@@ -5,7 +5,7 @@ archives: dist/pandoc-scholar.zip dist/pandoc-scholar.tar.gz
 
 dist/pandoc-scholar: \
 		csl \
-		lua-filters \
+		$(LUA_FILTERS_PATH) \
 		scholar-filters \
 		LICENSE README.md \
 		Makefile pandoc-options.inc.mk \

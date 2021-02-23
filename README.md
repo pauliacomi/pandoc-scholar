@@ -1,10 +1,10 @@
-Pandoc Scholar
+pandoc-scholar
 ==============
 
 [![release shield]](https://github.com/pandoc-scholar/pandoc-scholar/releases)
 [![DOI]](https://zenodo.org/badge/latestdoi/82204858)
 [![license shield]](./LICENSE)
-[![build status]](https://travis-ci.org/pandoc-scholar/pandoc-scholar)
+[![Build status][GitHub Actions badge]][GitHub Actions]
 
 Create beautiful, semantically enriched articles with pandoc. This
 package provides utilities to make publishing of scientific articles as
@@ -14,36 +14,37 @@ requires the programs pandoc and make.
 
 [release shield]: https://img.shields.io/github/release/pandoc-scholar/pandoc-scholar.svg
 [license shield]: https://img.shields.io/github/license/pandoc-scholar/pandoc-scholar.svg
-[build status]:   https://img.shields.io/travis/pandoc-scholar/pandoc-scholar/master.svg
+[GitHub Actions badge]: https://img.shields.io/github/workflow/status/pandoc-scholar/pandoc-scholar/CI?logo=github
+[GitHub Actions]: https://github.com/pandoc-scholar/pandoc-scholar/actions
 [DOI]: https://zenodo.org/badge/82204858.svg
-[paper]: https://peerj.com/articles/cs-112/
 
 Overview
 --------
 
 Plain pandoc is already excellent at document conversion, but it lacks
-in metadata handling. Pandoc scholar offers simple ways to include
+in metadata handling. Pandoc-scholar offers simple ways to include
 metadata on authors, affiliations, contact details, and citations. The
 data is included into the final output as document headers. Additionally
 all entries can be exported as [JSON-LD], a standardized format for the
 semantic web.
 
-The background leading to the development of pandoc scholar is described
-in the [paper] published in PeerJ Computer Science.
+The background leading to the development of pandoc-scholar is described
+in the [paper published in PeerJ Computer Science][paper].
 
-Note that since version 2.0, most of the functionality of pandoc Scholar
+Note that since version 2.0, most of the functionality of pandoc-scholar
 is now provided via [pandoc Lua filters]. If you prefer to mix-and-match
-selected functionalities provided by pandoc scholar, you can now use the
+selected functionalities provided by pandoc-scholar, you can now use the
 respective Lua filters directly. Integration with tools like RMarkdown
 is possible this way.
 
+[paper]: https://peerj.com/articles/cs-112/
 [JSON-LD]: https://en.wikipedia.org/wiki/JSON-LD
 [pandoc Lua filters]: https://github.com/pandoc/lua-filters
 
 ### Demo
 
 An example document plus bibliography is provided in the *example*
-folder. Running `make` in the project's root folder will process the
+folder. Running `make` in the *example* folder will process the
 example article, generating output like below:
 
 ![example article screenshot](https://pandoc-scholar.github.io/example/header.png)
@@ -56,15 +57,72 @@ metadata in [JSON-LD] format.
 [epub]: https://pandoc-scholar.github.io/example/example.epub
 [JSON-LD]: https://pandoc-scholar.github.io/example/example.jsonld
 
+Usage via Docker
+----------------
+
+A very easy way to use pandoc-scholar is via Docker. The ready-made
+images contain all necessary software to generate a paper in
+multiple formats. This avoids any compatibility concerns; only
+Docker is required.
+
+The official images are in the [pandocscholar/ubuntu] and
+[pandocscholar/alpine] images. The Alpine image is a bit smaller,
+while the Ubuntu image may be more familiar for people looking to
+extend the image. Both images come with pandoc, pandoc-citeproc,
+pandoc-crossref, and LaTeX.
+
+### Example call
+
+Docker commands are often unwieldly due to the additional arguments.
+We recommend to define an alias or short script to simplify its use.
+
+Given an article in file `my-research-article.md` and a simple
+Makefile like
+
+```makefile
+ARTICLE_FILE = my-research-article.md
+OUTFILE_PREFIX = out
+include $(PANDOC_SCHOLAR_PATH)/Makefile
+```
+
+the conversion can be performed by running
+
+    docker run --rm -v "$(pwd):/data" -u "$(id -u)" pandocscholar/alpine
+
+This will generate a set of files whose names all start with `out.`.
+Please be aware that existing files of the same name will be
+overwritten. The pandoc-scholar container calls `make` internally;
+additional commands and options can be passed by appending them the
+above command.
+
+The images are based upon the official pandoc images; for more info
+and usage examples, see the [pandoc/dockerfiles] GitHub repo. The
+Docker images can easily be used in automatic document conversion
+pipelines; [pandoc-actions-example] gives a good overview.
+
+A major difference between pandoc and pandoc-scholar images is that
+pandoc-scholar doesn't use `pandoc` but `make` as entrypoint. A
+basic Makefile must be present in the article directory when running
+pandoc-scholar.
+
+[pandoc/dockerfiles]: https://github.com/pandoc/dockerfiles
+[pandoc-actions-example]: https://github.com/pandoc/pandoc-action-example
 
 Prerequisites
 -------------
 
 This package builds on [pandoc](http://pandoc.org/), the universal
-document converter, version 2.1 or later. See the pandoc website for
-[installation instructions](http://pandoc.org/installing.html) and
-suggestions for LaTeX packages, which we use for PDF generation.
+document converter. See the pandoc website for [installation
+instructions](http://pandoc.org/installing.html) and suggestions for
+LaTeX packages, which we use for PDF generation.
 
+Starting with pandoc-scholar 3.0.0, the minimum required pandoc version
+is 2.11. If you have to use an older pandoc, please combine it with the
+last 2.* release of pandoc-scholar.
+
+Also note that pandoc's JATS support, especially citation handling, was
+buggy prior to pandoc v2.11.4. Please use that or a newer version when
+producing JATS XML.
 
 Installation
 ------------
@@ -110,7 +168,7 @@ include $(PANDOC_SCHOLAR_PATH)/Makefile
 Calling `make` as usual will create all configured output formats. Per default,
 this creates *pdf*, *latex*, *docx*, *odt*, *epub*, *html*, and *jats* output.
 The set of output files can be reduced by setting the `DEFAULT_EXTENSIONS`
-variable to a subset of the aforementioned formats.
+variable to a subset of the aforementioned formats. For example `DEFAULT_EXTENSIONS = pdf odt docx`
 
 Alternative template files can be set using `TEMPLATE_FILE_<FORMAT>` variables,
 where `<FORMAT>` is one of *HTML*, *EPUB*, *JATS*, or *LATEX*. The reference
@@ -145,10 +203,10 @@ include $(PANDOC_SCHOLAR_PATH)/Makefile
 Metadata Features
 -----------------
 
-Pandoc scholar supports additional functionality via metadata fields. Most
+Pandoc-scholar supports additional functionality via metadata fields. Most
 notably, the augmentation of articles with author and affiliation data, which is
-essential for academic publishing, is greatly simplified when using pandoc
-scholar.
+essential for academic publishing, is greatly simplified when using
+pandoc-scholar.
 
 ### Authors and affiliations
 
@@ -207,7 +265,7 @@ future extensions will be based on this convention.
 Understanding the reason a citations is included in scholarly articles usually
 requires natural language processing of the article. However, navigating the
 current literature landscape can be improved and by having that information
-accesible and in a machine-readable form. Pandoc scholar supports the CiTO
+accesible and in a machine-readable form. Pandoc-scholar supports the CiTO
 ontology, allowing authors to specify important meta-information on the citation
 directly while writing the text. The property is simply prepended to the
 citation key, separated by a colon: `@<property>:citationKey`.
@@ -247,13 +305,12 @@ Example:
 License
 -------
 
-Copyright © 2016–2020 Albert Krewinkel and Robert Winkler except for the
+Copyright © 2016–2021 Albert Krewinkel and Robert Winkler except for the
 following components:
 
 - HTML template: © 2016 Andrew G. York and Diana Mounter
 - dkjson: © 2010-2013 David Heiko Kolf
-- lua-filters: © 2017-2020 John MacFarlane, Albert Krewinkel, Jesse Rosenthal,
-  and Greg Tucker-Kellogg
+- lua-filters: © 2017-2021 Albert Krewinkel, John MacFarlane, and contributors.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
