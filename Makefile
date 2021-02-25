@@ -27,12 +27,6 @@ default: $(addprefix $(OUTFILE_PREFIX).,$(DEFAULT_EXTENSIONS))
 all: $(addprefix $(OUTFILE_PREFIX).,$(DEFAULT_EXTENSIONS)) \
      $(addprefix $(OUTFILE_PREFIX).,$(ADDITIONAL_EXTENSIONS))
 
-tex:	$(addprefix $(OUTFILE_PREFIX).,latex)
-pdf:	$(addprefix $(OUTFILE_PREFIX).,pdf)
-doc:	$(addprefix $(OUTFILE_PREFIX).,docx)
-html:	$(addprefix $(OUTFILE_PREFIX).,html)
-epub:	$(addprefix $(OUTFILE_PREFIX).,epub)
-
 $(JSON_FILE): $(ARTICLE_FILE) $(LUA_FILTERS)
 	$(PANDOC) $(PANDOC_READER_OPTIONS) \
 		     $(foreach filter, $(LUA_FILTERS), --lua-filter=$(filter)) \
